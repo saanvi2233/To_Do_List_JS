@@ -1,63 +1,62 @@
-const todoList = [];
-const tododate=[];
+const todoList = []; // Array to store task objects with {todo, date}
+
+// Initial render to display any existing tasks
 renderToDoList();
-// renderToDoList();
-function renderToDoList(){
 
+function renderToDoList() {
+    let todoListHTML = '';
 
-    // function renderToDoList() {
-        let todoListHTML = '';
-    
-        for (let i = 0; i < todoList.length; i++) {
-            const todo = todoList[i];
-            const date = tododate[i]; // Corrected variable name
-    
-            // Added `onclick="deleteTodo(${i})"` to remove the item
-            const html = `
-                <p>
-                    ${todo} - ${date} 
-                    <button onclick="deleteTodo(${i})">Delete</button>
-                </p>
-            `;
-    
-            todoListHTML += html;
-        }
-    
-        document.querySelector('.js-todo-list').innerHTML = todoListHTML;
-    // }
-    
+    // Loop through the todoList array and generate HTML for each task
+    todoList.forEach(function (todoObject, index) {
+        const { todo, date } = todoObject; // Destructuring to extract task name and date
+
+        // Creating HTML structure for each task with a delete button
+        const html = `
+            <p>
+                ${todo} - ${date} 
+                <button onclick="deleteTodo(${index})">Delete</button>
+            </p>
+        `;
+
+        todoListHTML += html;
+    });
+
+    // Update the webpage to display the to-do list
+    document.querySelector('.js-todo-list').innerHTML = todoListHTML;
 }
+
 function deleteTodo(index) {
-    todoList.splice(index, 1); // Remove the task
-    tododate.splice(index, 1); // Remove the date
+    console.log("Deleting task at index:", index); // Debugging statement
+
+    todoList.splice(index, 1); // Remove the task from the array
+    console.log("Updated todoList after deletion:", todoList); // Debugging statement
+
     renderToDoList(); // Re-render the updated list
 }
+
 function addTodo() {
-    const inputElement = document.querySelector('.js-name-input'); // Corrected selector
-    const name = inputElement.value;
-    console.log(name);
-    todoList.push(name);
-    console.log(todoList);
+    const inputElement = document.querySelector('.js-name-input'); // Select the task input field
+    const inputElementDate = document.querySelector('.js-date-input'); // Select the date input field
 
-    const inputElementDate = document.querySelector('.js-date-input'); // Corrected selector
-    const data=inputElementDate.value;
-    console.log(data);
-    tododate.push(data);
-    console.log(tododate);
+    const name = inputElement.value.trim(); // Trim to remove unnecessary spaces
+    const date = inputElementDate.value;
 
-    // todoList.push(
-    //     name:name,
-    //     date:data
-    // )
+    console.log("Task Entered:", name); // Debugging statement
+    console.log("Date Entered:", date); // Debugging statement
+
+    // Validation: Ensure both task and date are entered
     if (name === '' || date === '') {
         alert("Please enter both task and date!"); // Prevent adding empty tasks
         return;
     }
 
-    // changing the textbox as empty when something being added
-    inputElement.value = '';
-    inputElementDate.value='';
-    renderToDoList();
-    // renderToDoList();
-}
+    // Add a new task object to the todoList array
+    todoList.push({ todo: name, date });
+    console.log("Updated todoList:", todoList); // Debugging statement
 
+    // Clear input fields after adding a task
+    inputElement.value = '';
+    inputElementDate.value = '';
+
+    renderToDoList(); // Refresh the list to show the new task
+}
